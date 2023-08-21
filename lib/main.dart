@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_bloc/bloc/notes_bloc.dart';
+import 'package:notes_app_bloc/repository/app_database.dart';
 
 import 'pages/home_page.dart';
 
 void main() {
   runApp(BlocProvider(
-    create: (context) => NotesBloc(),
+    create: (context) => NotesBloc(db: AppDatabase.db),
     child: const MyApp(),
   ));
 }

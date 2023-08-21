@@ -35,3 +35,5 @@ class NotesDeletedState extends NotesState {
     required this.isNoteDeleted,
   });
 }
+
+class NotesErrorState extends NotesState {}

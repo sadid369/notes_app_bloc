@@ -9,8 +9,8 @@ part 'notes_event.dart';
 part 'notes_state.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
-  AppDatabase db = AppDatabase.db;
-  NotesBloc() : super(NotesInitialState()) {
+  AppDatabase db;
+  NotesBloc({required this.db}) : super(NotesInitialState()) {
     on<NotesInitialEvent>(notesInitialEvent);
     on<NotesAddEvent>(notesAddEvent);
     on<NotesUpdateEvent>(notesUpdateEvent);
