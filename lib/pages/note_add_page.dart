@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_bloc/bloc/notes_bloc.dart';
 import 'package:notes_app_bloc/constant.dart';
+import 'package:notes_app_bloc/model/notes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NoteAddPage extends StatelessWidget {
   const NoteAddPage({Key? key}) : super(key: key);
@@ -10,10 +12,8 @@ class NoteAddPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var _titleController = TextEditingController();
     var _descController = TextEditingController();
-    void addNotes(String title, String desc) async {
-      // bool isCreated = await context.read<NotesCubit>().addNotes(title, desc);
-      BlocProvider.of<NotesBloc>(context)
-          .add(NotesAddEvent(title: title, desc: desc));
+    void addNotes(Notes notes) async {
+      BlocProvider.of<NotesBloc>(context).add(NotesAddEvent(notes: notes));
       // return isCreated;
     }
 
@@ -132,10 +132,19 @@ class NoteAddPage extends StatelessWidget {
                           ),
                           child: TextButton(
                             onPressed: () async {
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              var user_id = preferences.getString('user_id');
+
                               if (_titleController.text.isNotEmpty &&
                                   _descController.text.isNotEmpty) {
-                                addNotes(_titleController.text.toString(),
-                                    _descController.text.toString());
+                                addNotes(
+                                  Notes(
+                                    user_id: int.parse(user_id!),
+                                    title: _titleController.text.toString(),
+                                    desc: _descController.text.toString(),
+                                  ),
+                                );
                               } else {
                                 showDialog(
                                   context: context,

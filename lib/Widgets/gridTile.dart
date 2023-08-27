@@ -117,6 +117,7 @@ class MyGridTile extends StatelessWidget {
                               BlocProvider.of<NotesBloc>(context)
                                   .add(NotesDeleteEvent(
                                 id: notes.note_id!,
+                                user_id: notes.user_id.toString(),
                               ));
                               Navigator.pop(context);
                             },

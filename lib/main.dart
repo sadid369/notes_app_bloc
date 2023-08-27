@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_bloc/bloc/notes_bloc.dart';
+import 'package:notes_app_bloc/constant.dart';
+import 'package:notes_app_bloc/pages/splash_page.dart';
 import 'package:notes_app_bloc/repository/app_database.dart';
 
 import 'pages/home_page.dart';
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: const HomePage(),
+      home: SplashPage(),
     );
   }
 }

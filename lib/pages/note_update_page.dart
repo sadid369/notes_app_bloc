@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app_bloc/bloc/notes_bloc.dart';
 import 'package:notes_app_bloc/constant.dart';
 import 'package:notes_app_bloc/model/notes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NoteUpdatePage extends StatefulWidget {
   final Notes notes;
@@ -142,13 +143,19 @@ class _NoteUpdatePageState extends State<NoteUpdatePage> {
                           ),
                           child: TextButton(
                             onPressed: () async {
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              var user_id = preferences.getString('user_id');
                               if (_titleController.text.isNotEmpty &&
                                   _descController.text.isNotEmpty) {
                                 updateNotes(
                                   Notes(
                                       title: _titleController.text.toString(),
                                       desc: _descController.text.toString(),
-                                      note_id: widget.notes.note_id),
+                                      note_id: widget.notes.note_id,
+                                      user_id: int.parse(
+                                        user_id!,
+                                      )),
                                 );
                               }
                             },
