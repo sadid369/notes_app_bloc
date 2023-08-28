@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app_bloc/pages/home_page.dart';
 import 'package:notes_app_bloc/pages/sign_up_page.dart';
+import 'package:notes_app_bloc/repository/app_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,13 +15,14 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final FocusNode _focusNodePassword = FocusNode();
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
+    AppDatabase db = AppDatabase.db;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Form(
@@ -39,10 +43,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 60),
               TextFormField(
-                controller: _controllerUsername,
+                controller: _controllerEmail,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  labelText: "Username",
+                  labelText: "Email",
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -53,13 +57,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
-                  // if (value == null || value.isEmpty) {
-                  //   return "Please enter username.";
-                  // } else if (!_boxAccounts.containsKey(value)) {
-                  //   return "Username is not registered.";
-                  // }
+                  if (value == null || value.isEmpty) {
+                    return "Please enter Email.";
+                  }
 
-                  // return null;
+                  return null;
                 },
               ),
               const SizedBox(height: 10),
@@ -88,14 +90,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 validator: (String? value) {
-                  // if (value == null || value.isEmpty) {
-                  //   return "Please enter password.";
-                  // } else if (value !=
-                  //     _boxAccounts.get(_controllerUsername.text)) {
-                  //   return "Wrong password.";
-                  // }
+                  if (value == null || value.isEmpty) {
+                    return "Please enter password.";
+                  }
 
-                  // return null;
+                  return null;
                 },
               ),
               const SizedBox(height: 60),
@@ -108,20 +107,23 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
-                      // if (_formKey.currentState?.validate() ?? false) {
-                      //   _boxLogin.put("loginStatus", true);
-                      //   _boxLogin.put("userName", _controllerUsername.text);
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        var isUserExists = await db.loginUser(
+                            email: _controllerEmail.text.toString(),
+                            password: _controllerPassword.text.toString());
 
-                      //   Navigator.pushReplacement(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return Home();
-                      //       },
-                      //     ),
-                      //   );
-                      // }
+                        if (isUserExists) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const HomePage();
+                              },
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: const Text("Login"),
                   ),
@@ -131,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          // _formKey.currentState?.reset();
+                          _formKey.currentState?.reset();
 
                           Navigator.push(
                             context,
@@ -161,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     _focusNodePassword.dispose();
-    _controllerUsername.dispose();
+    _controllerEmail.dispose();
     _controllerPassword.dispose();
     super.dispose();
   }

@@ -43,6 +43,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       NotesDeleteEvent event, Emitter<NotesState> emit) async {
     var isNoteDelete = await db.deleteNote(event.id);
     emit(NotesDeletedState(isNoteDeleted: isNoteDelete));
-    add(NotesInitialEvent(user_id: int.parse(event.user_id)));
+    add(NotesInitialEvent(user_id: event.user_id));
   }
 }

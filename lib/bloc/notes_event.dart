@@ -5,7 +5,7 @@ part of 'notes_bloc.dart';
 abstract class NotesEvent {}
 
 class NotesInitialEvent extends NotesEvent {
-  final int user_id;
+  final String user_id;
   NotesInitialEvent({
     required this.user_id,
   });

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app_bloc/model/user_model.dart';
+import 'package:notes_app_bloc/repository/app_database.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -25,6 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppDatabase db = AppDatabase.db;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Form(
@@ -199,29 +202,47 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        // _boxAccounts.put(
-                        //   _controllerUsername.text,
-                        //   _controllerConFirmPassword.text,
-                        // );
+                        var isNewUserCreated = await db.signUpUser(
+                            user: UserModel(
+                          name: _controllerUsername.text.toString(),
+                          email: _controllerEmail.text.toString(),
+                          phone: _controllerPhone.text.toString(),
+                          password: _controllerPassword.text.toString(),
+                        ));
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 200,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                        if (isNewUserCreated) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 200,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              content: const Text("Registered Successfully"),
                             ),
-                            behavior: SnackBarBehavior.floating,
-                            content: const Text("Registered Successfully"),
-                          ),
-                        );
+                          );
+                          _formKey.currentState?.reset();
 
-                        _formKey.currentState?.reset();
-
-                        Navigator.pop(context);
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 200,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              content: const Text("Some Thing Wrong"),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
                       }
                     },
                     child: const Text("Register"),
@@ -255,6 +276,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _focusNodeConfirmPassword.dispose();
     _controllerUsername.dispose();
     _controllerEmail.dispose();
+    _controllerPhone.dispose();
     _controllerPassword.dispose();
     _controllerConFirmPassword.dispose();
     super.dispose();

@@ -140,7 +140,7 @@ class NoteAddPage extends StatelessWidget {
                                   _descController.text.isNotEmpty) {
                                 addNotes(
                                   Notes(
-                                    user_id: int.parse(user_id!),
+                                    user_id: user_id!,
                                     title: _titleController.text.toString(),
                                     desc: _descController.text.toString(),
                                   ),

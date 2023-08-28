@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var user_id = preferences.getString('user_id');
     BlocProvider.of<NotesBloc>(context)
-        .add(NotesInitialEvent(user_id: int.parse(user_id!)));
+        .add(NotesInitialEvent(user_id: user_id!));
   }
 
   @override
